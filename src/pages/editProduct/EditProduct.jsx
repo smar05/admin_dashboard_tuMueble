@@ -48,16 +48,15 @@ const EditProduct = () => {
       for (let tax of product.taxes) {
         taxesSum += tax.taxeValue;
       }
-
-      let priceFinal =
-        Math.round(
-          product.priceGross *
-            (1 - product.discount / 100) *
-            (1 + taxesSum / 100) *
-            100
-        ) / 100;
-      setProduct({ ...product, priceFinal });
     }
+    let priceFinal =
+      Math.round(
+        product.priceGross *
+          (1 - product.discount / 100) *
+          (1 + taxesSum / 100) *
+          100
+      ) / 100;
+    setProduct({ ...product, priceFinal });
   }, [product.priceGross, product.discount, product.taxes]);
 
   //Get product data

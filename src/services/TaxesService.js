@@ -1,17 +1,17 @@
 import * as ConstData from "../common/ConstData";
 
-const API_PRODUCTS = `${ConstData.URL_BACK}api/products`;
+const API_TAXES = `${ConstData.URL_BACK}api/taxes`;
 
-export default class ProductsService {
+export default class TaxesService {
   /**
-   * Find all products
+   * Find all taxes
    *
    * @static
-   * @returns All products
-   * @memberof ProductsService
+   * @returns All taxes
+   * @memberof TaxesService
    */
   static findAll = () => {
-    return fetch(API_PRODUCTS, { method: "GET" })
+    return fetch(API_TAXES, { method: "GET" })
       .then((promise) => promise.json())
       .catch((err) => {
         console.error(err);
@@ -19,18 +19,18 @@ export default class ProductsService {
   };
 
   /**
-   * Find product by id
+   * Find tax by id
    *
    * @static
-   * @param {number} id Product id
-   * @returns The product by id
-   * @memberof ProductsService
+   * @param {number} id Tax id
+   * @returns The Tax by id
+   * @memberof TaxesService
    */
   static findOne = (id) => {
     if (!id) {
       return null;
     }
-    return fetch(`${API_PRODUCTS}/detail/${id}`, { method: "GET" })
+    return fetch(`${API_TAXES}/detail/${id}`, { method: "GET" })
       .then((promise) => promise.json())
       .catch((err) => {
         console.error(err);

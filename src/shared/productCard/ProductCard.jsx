@@ -1,11 +1,11 @@
 import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 import logo from "../../logo.svg";
 
 function ProductCard(props) {
-  let product = JSON.parse(props.product);
+  let product = props.product ? JSON.parse(props.product) : {};
 
   return (
     <Fragment>
@@ -39,7 +39,10 @@ function ProductCard(props) {
             <span className="font-weight-bold">Precio Final:</span> $
             {product.priceFinal}
           </p>
-          <Link className="btn btn-info btn-block" to="/edit-product">
+          <Link
+            className="btn btn-info btn-block"
+            to={`/edit-product/${product.id}`}
+          >
             <FontAwesomeIcon icon={faPencil} /> &nbsp; Editar Producto
           </Link>
         </div>

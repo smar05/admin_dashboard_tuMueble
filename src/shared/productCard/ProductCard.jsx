@@ -1,10 +1,12 @@
 import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import logo from "../../logo.svg";
 
-function ProductCard() {
+function ProductCard(props) {
+  let product = JSON.parse(props.product);
+
   return (
     <Fragment>
       <div className="card text-center">
@@ -18,7 +20,7 @@ function ProductCard() {
         align-center
       "
         >
-          <span className="font-weight-bold">Nombre:</span> Nombre producto
+          {product.productName}
           <button className="btn btn-danger">
             <FontAwesomeIcon icon={faTrashCan} />
           </button>
@@ -26,17 +28,16 @@ function ProductCard() {
         <img className="card-img-top" src={logo} alt="img_card"></img>
         <div className="card-body">
           <p>
-            <span className="font-weight-bold">Categoria:</span> Categoria
-            producto
+            <span className="font-weight-bold">Categoria:</span>{" "}
+            {product.category.category}
           </p>
           <p>
-            <span className="font-weight-bold">Cant. Inventario:</span> 10
+            <span className="font-weight-bold">Cant. Inventario:</span>{" "}
+            {product.unitsBuyes}
           </p>
           <p>
-            <span className="font-weight-bold">Precio Final:</span> $100.000
-          </p>
-          <p>
-            <span className="font-weight-bold">Descuento:</span> %10
+            <span className="font-weight-bold">Precio Final:</span> $
+            {product.priceFinal}
           </p>
           <Link className="btn btn-info btn-block" to="/edit-product">
             <FontAwesomeIcon icon={faPencil} /> &nbsp; Editar Producto

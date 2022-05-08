@@ -16,7 +16,7 @@ function App() {
           <Routes>
             <Route path="/" exact={true} element={<Home />} />
             <Route path="/products-list" element={<ProductsList />} />
-            <Route path="/edit-product" element={<EditProduct />} />
+            <Route path="/edit-product/:id" element={<EditProduct />} />
             <Route path="/create-product" element={<EditProduct />} />
             <Route path="*" exact={true} element={<Error404 />} />
           </Routes>

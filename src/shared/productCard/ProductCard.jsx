@@ -2,7 +2,7 @@ import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../logo.svg";
+import { URL_IMAGES_PRODUCTS } from "../../common/ConstData";
 
 function ProductCard(props) {
   let product = props.product ? JSON.parse(props.product) : {};
@@ -25,7 +25,16 @@ function ProductCard(props) {
             <FontAwesomeIcon icon={faTrashCan} />
           </button>
         </div>
-        <img className="card-img-top" src={logo} alt="img_card"></img>
+        <img
+          className="card-img-top"
+          src={`${
+            URL_IMAGES_PRODUCTS +
+            (product.images
+              ? product.images.find((image) => image.isMain).pathImagen
+              : "")
+          }`}
+          alt="img_card"
+        ></img>
         <div className="card-body">
           <p>
             <span className="font-weight-bold">Categoria:</span>{" "}

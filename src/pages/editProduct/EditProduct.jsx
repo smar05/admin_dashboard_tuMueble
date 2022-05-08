@@ -5,26 +5,31 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import logo from "../../logo.svg";
 import TaxesService from "../../services/TaxesService";
 import ProductCategoryService from "../../services/ProductCategoryService";
 import ProductsService from "../../services/ProductsService";
+import { useLocation } from "react-router-dom";
+import { URL_IMAGES_PRODUCTS } from "../../common/ConstData";
 
 const EditProduct = () => {
-  let { id } = useParams();
-  let [product, setProduct] = useState({
-    productName: "",
-    productDescription: "",
-    sku: "",
-    productTerminated: "",
-    category: {},
+  const location = useLocation();
+  let [componentTitle, setComponentTitle] = useState("Crear Producto");
+  let initProduct = {
+    productName: null,
+    productDescription: null,
+    sku: null,
+    productTerminated: null,
+    category: null,
     isActive: false,
-    priceGross: 0,
+    priceGross: null,
     taxes: [],
-    discount: 0,
-    priceFinal: 0,
-    unitsBuyes: 0,
-  });
+    discount: null,
+    priceFinal: null,
+    unitsBuyes: null,
+  };
+
+  let { id } = useParams();
+  let [product, setProduct] = useState(initProduct);
   let [productCategories, setProductCategories] = useState([]);
   let [taxes, setTaxes] = useState([]);
 
@@ -41,12 +46,21 @@ const EditProduct = () => {
     getTaxesData();
   }, []);
 
+  //Location change
+  useEffect(() => {
+    if (location.pathname === "/create-product") {
+      setProduct(initProduct);
+    } else {
+      setComponentTitle("Editar Producto");
+    }
+  }, [location]);
+
   //Calculo del precio final
   useEffect(() => {
     let taxesSum = 0;
     if (product.taxes && product.taxes.length > 0) {
       for (let tax of product.taxes) {
-        taxesSum += tax.taxeValue;
+        taxesSum += Number(tax.taxeValue);
       }
     }
     let priceFinal =
@@ -106,7 +120,7 @@ const EditProduct = () => {
   return (
     <Fragment>
       <div className="row text-center offset-md-2">
-        <h1>Crear Producto</h1>
+        <h1>{componentTitle}</h1>
       </div>
       {/**Visualizacion del producto */}
       {id ? (
@@ -115,7 +129,15 @@ const EditProduct = () => {
             <div className="col-md-6 offset-md-3 mb-3">
               <div className="card card-body text-center">
                 <h3 className="font-weight-bold">{product.productName} </h3>
-                <img src={logo} alt="mainImage" />
+                <img
+                  src={`${
+                    URL_IMAGES_PRODUCTS +
+                    (product.images
+                      ? product.images.find((image) => image.isMain).pathImagen
+                      : "")
+                  }`}
+                  alt="mainImage"
+                />
                 <p>
                   <span className="font-weight-bold">Descripción: </span>
                   <br />
@@ -298,7 +320,9 @@ const EditProduct = () => {
                   <select
                     name="categoryId"
                     className="form-control"
-                    value={JSON.stringify(product.category)}
+                    value={
+                      product.category ? JSON.stringify(product.category) : null
+                    }
                     onSelect
                     onChange={(e) => {
                       onChangeProductData(
@@ -308,7 +332,7 @@ const EditProduct = () => {
                       );
                     }}
                   >
-                    <option value="" disabled selected></option>
+                    <option value={null} disabled selected></option>
                     {productCategories.map((category, index) => {
                       return (
                         <Fragment key={index}>

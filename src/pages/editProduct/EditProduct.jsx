@@ -3,7 +3,7 @@ import {
   faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import TaxesService from "../../services/TaxesService";
 import ProductCategoryService from "../../services/ProductCategoryService";
@@ -32,11 +32,63 @@ const EditProduct = () => {
   let [product, setProduct] = useState(initProduct);
   let [productCategories, setProductCategories] = useState([]);
   let [taxes, setTaxes] = useState([]);
+  let [formValidation, setFormValidation] = useState(true); //Validacion del formulario
+  let formInputs = {
+    productName: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    productDescription: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    productTerminated: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    category: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    priceGross: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    discount: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    unitsBuyes: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    priceFinal: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+  };
 
   //Type of field data
   const TYPE_FIELDS = {
     number: "number",
     json: "json",
+  };
+
+  const VALIDATIONS_TYPES = {
+    NotEmpty: "NotEmpty",
+    Number: "Number",
+    MaxLength: "MaxLength",
+    MinLength: "MinLength",
+    Max: "Max",
+    Min: "Min",
   };
 
   //Begin component
@@ -115,6 +167,107 @@ const EditProduct = () => {
       ...product,
       [field]: value,
     });
+  }
+
+  /**
+   * Validation of form fields
+   *
+   * @param {*} value Value of the field
+   * @param {string} field Name of the field
+   * @param {[string]} validations Type of validation
+   */
+  function validationFormFields(value, field, validations) {
+    let classGroup = formInputs[field].group.current.className;
+    let classGroupData = classGroup.split(" ");
+    let classInput = formInputs[field].input.current.className;
+    let classInputData = classInput.split(" ");
+    let cumple = true; //Si el campo cumple
+    let mensajesError = [];
+
+    for (const validation of validations) {
+      //Campo vacio
+      if (validation === VALIDATIONS_TYPES.NotEmpty) {
+        if (!value) {
+          cumple = false;
+          mensajesError.push("El campo no puede estar vacio.");
+        }
+      }
+      //Campo tamaño minimo
+      if (validation[0] === VALIDATIONS_TYPES.MinLength) {
+        if (value && value.length < validation[1]) {
+          cumple = false;
+          mensajesError.push(
+            `El campo no puede tener menos de ${validation[1]} caracteres.`
+          );
+        }
+      }
+      //Campo tamaño maximo
+      if (validation[0] === VALIDATIONS_TYPES.MaxLength) {
+        if (value && value.length > validation[1]) {
+          cumple = false;
+          mensajesError.push(
+            `El campo no puede tener mas de ${validation[1]} caracteres.`
+          );
+        }
+      }
+      //Tipo numerico
+      if (validation === VALIDATIONS_TYPES.Number) {
+        if (Number(value) == NaN) {
+          cumple = false;
+          mensajesError.push("El campo tiene que ser numerico");
+        }
+      }
+      if (validation[0] === VALIDATIONS_TYPES.Min) {
+        if (Number(value) < validation[1]) {
+          cumple = false;
+          mensajesError.push(
+            `El campo tiene que ser mayor que ${validation[1]}.`
+          );
+        }
+      }
+      if (validation[0] === VALIDATIONS_TYPES.Max) {
+        if (Number(value) > validation[1]) {
+          cumple = false;
+          mensajesError.push(
+            `El campo tiene que ser menor que ${validation[1]}.`
+          );
+        }
+      }
+    }
+
+    formInputs[field].message.current.innerHTML = "";
+    if (!cumple) {
+      //Cumple la validacion
+      //Si no tiene la clase has-danger
+      if (classGroupData.indexOf("has-danger") < 0) {
+        classGroupData.push("has-danger");
+      }
+      //Si no tiene la clase is-invalid
+      if (classInputData.indexOf("is-invalid") < 0) {
+        classInputData.push("is-invalid");
+      }
+
+      if (mensajesError.length > 0) {
+        for (const mensajeError of mensajesError) {
+          formInputs[field].message.current.innerHTML += `${mensajeError}<br/>`;
+        }
+      }
+    } else {
+      //Incumple la validacion
+      //Si tiene la clase has-danger
+      if (classGroupData.indexOf("has-danger") >= 0) {
+        classGroupData.splice(classGroupData.indexOf("has-danger"), 1);
+      }
+      //Si tiene la clase is-invalid
+      if (classInputData.indexOf("is-invalid") >= 0) {
+        classInputData.splice(classInputData.indexOf("is-invalid"), 1);
+      }
+    }
+
+    formInputs[field].group.current.className = classGroupData.join(" ");
+    formInputs[field].input.current.className = classInputData.join(" ");
+
+    setFormValidation(cumple);
   }
 
   return (
@@ -231,12 +384,15 @@ const EditProduct = () => {
       ) : (
         <Fragment></Fragment>
       )}
+
+      {/**Formulario */}
       <form>
         <div className="row">
           <div className="col-md-4 offset-md-2 mb-3">
             <div className="card">
               <div className="card-body">
-                <div className="form-group">
+                {/**productName */}
+                <div className="form-group" ref={formInputs.productName.group}>
                   <label
                     for="productName"
                     className="form-label mt-4 font-weight-bold"
@@ -253,10 +409,24 @@ const EditProduct = () => {
                     value={product.productName}
                     onChange={(e) => {
                       onChangeProductData("productName", e.target.value);
+                      validationFormFields(e.target.value, "productName", [
+                        VALIDATIONS_TYPES.NotEmpty,
+                        [VALIDATIONS_TYPES.MinLength, 2],
+                        [VALIDATIONS_TYPES.MaxLength, 128],
+                      ]);
                     }}
+                    ref={formInputs.productName.input}
                   />
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.productName.message}
+                  ></div>
                 </div>
-                <div className="form-group">
+                {/**productDescription */}
+                <div
+                  className="form-group"
+                  ref={formInputs.productDescription.group}
+                >
                   <label
                     for="productDescription"
                     className="form-label mt-4 font-weight-bold"
@@ -270,11 +440,26 @@ const EditProduct = () => {
                     className="form-control"
                     id="productDescription"
                     value={product.productDescription}
+                    ref={formInputs.productDescription.input}
                     onChange={(e) => {
                       onChangeProductData("productDescription", e.target.value);
+                      validationFormFields(
+                        e.target.value,
+                        "productDescription",
+                        [
+                          VALIDATIONS_TYPES.NotEmpty,
+                          [VALIDATIONS_TYPES.MinLength, 2],
+                          [VALIDATIONS_TYPES.MaxLength, 512],
+                        ]
+                      );
                     }}
                   ></textarea>
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.productDescription.message}
+                  ></div>
                 </div>
+                {/**sku */}
                 <div className="form-group">
                   <label for="sku" className="form-label mt-4 font-weight-bold">
                     SKU
@@ -291,7 +476,11 @@ const EditProduct = () => {
                     }}
                   />
                 </div>
-                <div className="form-group">
+                {/**productTerminated */}
+                <div
+                  className="form-group"
+                  ref={formInputs.productTerminated.group}
+                >
                   <label
                     for="productTerminated"
                     className="form-label mt-4 font-weight-bold"
@@ -305,12 +494,27 @@ const EditProduct = () => {
                     className="form-control"
                     id="productTerminated"
                     value={product.productTerminated}
+                    ref={formInputs.productTerminated.input}
                     onChange={(e) => {
                       onChangeProductData("productTerminated", e.target.value);
+                      validationFormFields(
+                        e.target.value,
+                        "productTerminated",
+                        [
+                          VALIDATIONS_TYPES.NotEmpty,
+                          [VALIDATIONS_TYPES.MinLength, 2],
+                          [VALIDATIONS_TYPES.MaxLength, 64],
+                        ]
+                      );
                     }}
                   />
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.productTerminated.message}
+                  ></div>
                 </div>
-                <div className="form-group">
+                {/**category */}
+                <div className="form-group" ref={formInputs.category.group}>
                   <label
                     for="categoryId"
                     className="form-label mt-4 font-weight-bold"
@@ -323,13 +527,16 @@ const EditProduct = () => {
                     value={
                       product.category ? JSON.stringify(product.category) : null
                     }
-                    onSelect
+                    ref={formInputs.category.input}
                     onChange={(e) => {
                       onChangeProductData(
                         "category",
                         e.target.value,
-                        TYPE_FIELDS.json
+                        e.target.value ? TYPE_FIELDS.json : null
                       );
+                      validationFormFields(e.target.value, "category", [
+                        VALIDATIONS_TYPES.NotEmpty,
+                      ]);
                     }}
                   >
                     <option value={null} disabled selected></option>
@@ -343,7 +550,12 @@ const EditProduct = () => {
                       );
                     })}
                   </select>
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.category.message}
+                  ></div>
                 </div>
+                {/**mainImage */}
                 <div className="form-group">
                   <label
                     for="mainImage"
@@ -358,6 +570,7 @@ const EditProduct = () => {
                     name="mainImage"
                   />
                 </div>
+                {/**isActive */}
                 <fieldset className="form-group">
                   <div className="form-check">
                     <input
@@ -385,7 +598,8 @@ const EditProduct = () => {
           <div className="col-md-4 mb-3">
             <div className="card">
               <div className="card-body">
-                <div className="form-group">
+                {/**priceGross */}
+                <div className="form-group" ref={formInputs.priceGross.group}>
                   <label
                     for="priceGross"
                     className="form-label mt-4 font-weight-bold"
@@ -401,17 +615,27 @@ const EditProduct = () => {
                       className="form-control"
                       id="priceGross"
                       value={product.priceGross}
+                      ref={formInputs.priceGross.input}
                       onChange={(e) => {
                         onChangeProductData(
                           "priceGross",
                           e.target.value,
                           TYPE_FIELDS.number
                         );
+                        validationFormFields(e.target.value, "priceGross", [
+                          VALIDATIONS_TYPES.Number,
+                          [VALIDATIONS_TYPES.Min, 0],
+                        ]);
                       }}
                     />
+                    <div
+                      class="invalid-feedback"
+                      ref={formInputs.priceGross.message}
+                    ></div>
                   </div>
                 </div>
                 <div class="form-group">
+                  {/**taxes */}
                   <label for="taxes" class="form-label mt-4">
                     Impuestos
                   </label>
@@ -446,7 +670,8 @@ const EditProduct = () => {
                     })}
                   </select>
                 </div>
-                <div className="form-group">
+                {/**discount */}
+                <div className="form-group" ref={formInputs.discount.group}>
                   <fieldset>
                     <label
                       className="form-label mt-4 font-weight-bold"
@@ -462,19 +687,30 @@ const EditProduct = () => {
                         name="discount"
                         placeholder="Descuento"
                         value={product.discount}
+                        ref={formInputs.discount.input}
                         onChange={(e) => {
                           onChangeProductData(
                             "discount",
                             e.target.value,
                             TYPE_FIELDS.number
                           );
+                          validationFormFields(e.target.value, "discount", [
+                            VALIDATIONS_TYPES.Number,
+                            [VALIDATIONS_TYPES.Min, 0],
+                            [VALIDATIONS_TYPES.Max, 100],
+                          ]);
                         }}
                       />
                       <span class="input-group-text">%</span>
+                      <div
+                        class="invalid-feedback"
+                        ref={formInputs.discount.message}
+                      ></div>
                     </div>
                   </fieldset>
                 </div>
-                <div className="form-group">
+                {/**priceFInal */}
+                <div className="form-group" ref={formInputs.priceFinal.group}>
                   <label
                     for="priceFinal"
                     className="form-label mt-4 font-weight-bold"
@@ -490,11 +726,22 @@ const EditProduct = () => {
                       className="form-control"
                       id="priceFinal"
                       value={product.priceFinal}
+                      ref={formInputs.priceFinal.input}
+                      onChange={(e) => {
+                        validationFormFields(e.target.value, "priceFinal", [
+                          VALIDATIONS_TYPES.Number,
+                          [VALIDATIONS_TYPES.Min, 0],
+                        ]);
+                      }}
                       readOnly
                     />
+                    <div
+                      class="invalid-feedback"
+                      ref={formInputs.priceFinal.message}
+                    ></div>
                   </div>
                 </div>
-                <div className="form-group">
+                <div className="form-group" ref={formInputs.unitsBuyes.group}>
                   <label
                     for="unitsBuyes"
                     className="form-label mt-4 font-weight-bold"
@@ -508,14 +755,24 @@ const EditProduct = () => {
                     className="form-control"
                     id="unitsBuyes"
                     value={product.unitsBuyes}
+                    ref={formInputs.unitsBuyes.input}
                     onChange={(e) => {
                       onChangeProductData(
                         "unitsBuyes",
                         e.target.value,
                         TYPE_FIELDS.number
                       );
+                      validationFormFields(e.target.value, "unitsBuyes", [
+                        VALIDATIONS_TYPES.Number,
+                        [VALIDATIONS_TYPES.Min, 0],
+                        [VALIDATIONS_TYPES.Max, 999],
+                      ]);
                     }}
                   />
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.unitsBuyes.message}
+                  ></div>
                 </div>
                 <button type="submit" className="btn btn-success btn-block">
                   Guardar

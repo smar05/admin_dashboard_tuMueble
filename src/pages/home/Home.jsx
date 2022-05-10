@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
 function Home() {
   return <Fragment>Home</Fragment>;

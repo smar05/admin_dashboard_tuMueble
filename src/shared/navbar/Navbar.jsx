@@ -1,4 +1,4 @@
-import { faBoxesStacked, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBoxesStacked, faChair, faCouch, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
@@ -6,10 +6,12 @@ import { Link } from "react-router-dom";
 export default function Navbar() {
   return (
     <Fragment>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-1 shadow">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
-            Dashboard TuMueble
+            <FontAwesomeIcon icon={faCouch} className="" />
+            <span className="mx-3">|</span>
+            TuMueble
           </Link>
           <button
             className="navbar-toggler"

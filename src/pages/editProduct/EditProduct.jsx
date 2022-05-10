@@ -106,8 +106,8 @@ const EditProduct = () => {
 
   return (
     <Fragment>
-      <div className="row text-center offset-md-2">
-        <h1>Crear Producto</h1>
+      <div className="row justify-content-center">
+        <h1 className="text-black-50 h3 text-capitalize">Crear Producto</h1>
       </div>
       {/**Visualizacion del producto */}
       {id ? (
@@ -166,7 +166,7 @@ const EditProduct = () => {
                         ? product.taxes.map((tax, index) => {
                             return (
                               <Fragment key={index}>
-                                {tax.taxeName}: {tax.taxeValue}%
+                                {tax.taxeName}
                                 <br />
                               </Fragment>
                             );

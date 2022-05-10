@@ -28,11 +28,14 @@ const EditProduct = () => {
     unitsBuyes: null,
   };
 
-  let { id } = useParams();
+  let { id } = useParams(); //Id product by url
   let [product, setProduct] = useState(initProduct);
   let [productCategories, setProductCategories] = useState([]);
   let [taxes, setTaxes] = useState([]);
   let [formValidation, setFormValidation] = useState(true); //Validacion del formulario
+  let [selectedFile, setSelectedFile] = useState(); //Selected image
+  let [preview, setPreview] = useState(); //Preview image
+
   let formInputs = {
     productName: {
       group: useRef(),
@@ -100,10 +103,15 @@ const EditProduct = () => {
 
   //Location change
   useEffect(() => {
+    console.log("a: " + location.pathname);
     if (location.pathname === "/create-product") {
       setProduct(initProduct);
-    } else {
+      setComponentTitle("Crear Producto");
+      console.log("b: " + location.pathname);
+    } else if (location.pathname === `/edit-product/${id}`) {
       setComponentTitle("Editar Producto");
+
+      console.log("c: " + location.pathname);
     }
   }, [location]);
 
@@ -124,6 +132,30 @@ const EditProduct = () => {
       ) / 100;
     setProduct({ ...product, priceFinal });
   }, [product.priceGross, product.discount, product.taxes]);
+
+  // create a preview as a side effect, whenever selected file is changed
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreview(undefined);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedFile]);
+
+  const onSelectFile = (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+
+    // I've kept this example simple by using the first image instead of multiple
+    setSelectedFile(e.target.files[0]);
+  };
 
   //Get product data
   function getProductData() {
@@ -283,12 +315,19 @@ const EditProduct = () => {
               <div className="card card-body text-center">
                 <h3 className="font-weight-bold">{product.productName} </h3>
                 <img
-                  src={`${
-                    URL_IMAGES_PRODUCTS +
-                    (product.images
-                      ? product.images.find((image) => image.isMain).pathImagen
-                      : "")
-                  }`}
+                  src={
+                    product.images &&
+                    product.images.find((image) => image.isMain) &&
+                    !preview
+                      ? `${
+                          URL_IMAGES_PRODUCTS +
+                          (product.images
+                            ? product.images.find((image) => image.isMain)
+                                .pathImagen
+                            : "")
+                        }`
+                      : preview
+                  }
                   alt="mainImage"
                 />
                 <p>
@@ -386,7 +425,13 @@ const EditProduct = () => {
       )}
 
       {/**Formulario */}
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          console.log(product);
+        }}
+        enctype="multipart/form-data"
+      >
         <div className="row">
           <div className="col-md-4 offset-md-2 mb-3">
             <div className="card">
@@ -568,6 +613,8 @@ const EditProduct = () => {
                     type="file"
                     id="mainImage"
                     name="mainImage"
+                    accept="image/png, .jpg, .jpeg, image/gif"
+                    onChange={onSelectFile}
                   />
                 </div>
                 {/**isActive */}

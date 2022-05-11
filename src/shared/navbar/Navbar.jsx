@@ -5,13 +5,37 @@ import {
   faSignInAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { Fragment, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 
 export default function Navbar() {
+  //Referencia al menu desplegable de productos
+  let productsDropdown = useRef();
 
-  const { open, setOpen } = useState(false);
+  //Begin component
+  useEffect(() => {
+    //El menu se inicializa cerrado
+    productsDropdown.current.style.display = "none";
+  }, []);
+
+  /**
+   * Function for display or close a htm item
+   *
+   * @param {useRef} itemRef html item for display
+   * @return {boolean} if the item was open or close
+   */
+  function showProductsMenu(itemRef) {
+    //Despliega el menu
+    if (itemRef.current.style.display === "none") {
+      itemRef.current.style.display = "block";
+      return true;
+    }
+    //Oculta el menu
+    itemRef.current.style.display = "none";
+    return false;
+  }
 
   return (
     <header>
@@ -32,39 +56,49 @@ export default function Navbar() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <Collapse
-            className="align-items-center"
-            in={open}
-            id="navbarNav"
-          >
-            <ul className="navbar-nav ml-auto align-items-center">
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  aria-current="page"
-                  to="/create-product"
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item"></li>
+              <li
+                className="nav-item dropdown"
+                onClick={() => {
+                  showProductsMenu(productsDropdown);
+                }}
+              >
+                <div
+                  className="nav-link dropdown-toggle show"
+                  data-bs-toggle="dropdown"
+                  href="/"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="true"
                 >
-                  <FontAwesomeIcon icon={faPlus} size="lg" />
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  aria-current="page"
-                  to="/products-list"
+                  Productos
+                </div>
+                <div
+                  className="dropdown-menu show"
+                  data-bs-popper="none"
+                  ref={productsDropdown}
                 >
-                  <FontAwesomeIcon icon={faBoxesStacked} size="lg" />
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link className="nav-link mx-1" to="/login">
-                  <FontAwesomeIcon icon={faSignInAlt} size="lg" />
-                </Link>
+                  <Link
+                    className="dropdown-item"
+                    aria-current="page"
+                    to="/products-list"
+                  >
+                    <FontAwesomeIcon icon={faBoxesStacked} /> &nbsp; Ver
+                    Productos
+                  </Link>
+                  <Link
+                    className="dropdown-item"
+                    aria-current="page"
+                    to="/create-product"
+                  >
+                    <FontAwesomeIcon icon={faPlus} /> &nbsp; Crear Producto
+                  </Link>
+                </div>
               </li>
             </ul>
-          </Collapse>
+          </div>
         </div>
       </nav>
     </header>

@@ -39,7 +39,7 @@ const EditProduct = () => {
     getProductData();
     getAllProductCategoryData();
     getTaxesData();
-  }, []);
+  },[]);
 
   //Calculo del precio final
   useEffect(() => {
@@ -106,7 +106,7 @@ const EditProduct = () => {
 
   return (
     <Fragment>
-      <div className="row justify-content-center">
+      <div className="justify-content-center">
         <h1 className="text-black-50 h3 text-capitalize">Crear Producto</h1>
       </div>
       {/**Visualizacion del producto */}

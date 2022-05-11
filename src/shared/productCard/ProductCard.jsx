@@ -9,7 +9,7 @@ function ProductCard(props) {
 
   return (
     <Fragment>
-      <div className="card text-center">
+      <div className="card text-center my-3 rounded">
         <div
           className="
         card-header
@@ -18,11 +18,12 @@ function ProductCard(props) {
         d-flex
         justify-content-between
         align-center
+        rounded
       "
         >
           {product.productName}
-          <button className="btn btn-danger">
-            <FontAwesomeIcon icon={faTrashCan} />
+          <button className="btn btn-danger rounded">
+            <FontAwesomeIcon icon={faTrashCan} size="2x" />
           </button>
         </div>
         <img className="card-img-top" src={logo} alt="img_card"></img>
@@ -40,7 +41,7 @@ function ProductCard(props) {
             {product.priceFinal}
           </p>
           <Link
-            className="btn btn-info btn-block"
+            className="btn btn-info btn-block rounded"
             to={`/edit-product/${product.id}`}
           >
             <FontAwesomeIcon icon={faPencil} /> &nbsp; Editar Producto

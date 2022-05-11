@@ -1,14 +1,23 @@
-import { faBoxesStacked, faChair, faCouch, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBoxesStacked,
+  faCouch,
+  faPlus,
+  faSignInAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
 
 export default function Navbar() {
+
+  const { open, setOpen } = useState(false);
+
   return (
-    <Fragment>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-1 shadow">
+    <header>
+      <nav className="navbar navbar-expand-md navbar-dark bg-dark py-2 shadow">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
+          <Link className="navbar-brand text-white-50" to="/">
             <FontAwesomeIcon icon={faCouch} className="" />
             <span className="mx-3">|</span>
             TuMueble
@@ -16,38 +25,48 @@ export default function Navbar() {
           <button
             className="navbar-toggler"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
             aria-controls="navbarNav"
-            aria-expanded="false"
             aria-label="Toggle navigation"
+            onClick={()=> setOpen(!open) }
+            aria-expanded={open}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ml-auto">
+          <Collapse
+            className="align-items-center"
+            in={open}
+            id="navbarNav"
+          >
+            <ul className="navbar-nav ml-auto align-items-center">
               <li className="nav-item">
                 <Link
                   className="nav-link"
                   aria-current="page"
                   to="/create-product"
                 >
-                  <FontAwesomeIcon icon={faPlus} /> &nbsp; Crear Producto
+                  <FontAwesomeIcon icon={faPlus} size="lg" />
                 </Link>
               </li>
+
               <li className="nav-item">
                 <Link
                   className="nav-link"
                   aria-current="page"
                   to="/products-list"
                 >
-                  <FontAwesomeIcon icon={faBoxesStacked} /> &nbsp; Ver Productos
+                  <FontAwesomeIcon icon={faBoxesStacked} size="lg" />
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link className="nav-link mx-1" to="/login">
+                  <FontAwesomeIcon icon={faSignInAlt} size="lg" />
                 </Link>
               </li>
             </ul>
-          </div>
+          </Collapse>
         </div>
       </nav>
-    </Fragment>
+    </header>
   );
 }

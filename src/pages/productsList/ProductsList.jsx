@@ -23,7 +23,7 @@ function ProductsList() {
         {products.map((product, index) => {
           return (
             <Fragment key={index}>
-              <div className="col-md-4">
+              <div className="col-10 col-xs-8 col-sm-6 col-md-4 col-lg-3 mx-0">
                 <ProductCard product={JSON.stringify(product)} />
               </div>
             </Fragment>

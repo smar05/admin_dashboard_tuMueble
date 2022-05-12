@@ -9,10 +9,12 @@ import React, { Fragment, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-
 export default function Navbar() {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
+
+  //Referencia al menu desplgable del navbar
+  let navbarDropdown = useRef();
 
   //Begin component
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function Navbar() {
    * @param {useRef} itemRef html item for display
    * @return {boolean} if the item was open or close
    */
-  function showProductsMenu(itemRef) {
+  function showItem(itemRef) {
     //Despliega el menu
     if (itemRef.current.style.display === "none") {
       itemRef.current.style.display = "block";
@@ -51,18 +53,23 @@ export default function Navbar() {
             type="button"
             aria-controls="navbarNav"
             aria-label="Toggle navigation"
-            onClick={()=> setOpen(!open) }
-            aria-expanded={open}
+            onClick={() => {
+              showItem(navbarDropdown);
+            }}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
+          <div
+            className="collapse navbar-collapse"
+            id="navbarNav"
+            ref={navbarDropdown}
+          >
             <ul className="navbar-nav ml-auto">
               <li className="nav-item"></li>
               <li
                 className="nav-item dropdown"
                 onClick={() => {
-                  showProductsMenu(productsDropdown);
+                  showItem(productsDropdown);
                 }}
               >
                 <div

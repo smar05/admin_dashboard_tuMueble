@@ -10,6 +10,7 @@ import ProductCategoryService from "../../services/ProductCategoryService";
 import ProductsService from "../../services/ProductsService";
 import { useLocation } from "react-router-dom";
 import { URL_IMAGES_PRODUCTS } from "../../common/ConstData";
+import { Functions } from "../../common/Functions";
 
 const EditProduct = () => {
   const location = useLocation();
@@ -32,9 +33,8 @@ const EditProduct = () => {
   let [product, setProduct] = useState(initProduct);
   let [productCategories, setProductCategories] = useState([]);
   let [taxes, setTaxes] = useState([]);
-  let [formValidation, setFormValidation] = useState(true); //Validacion del formulario
+  let [formValidation, setFormValidation] = useState(false); //Validacion del formulario
   let [selectedFile, setSelectedFile] = useState(); //Selected image
-  let [preview, setPreview] = useState(); //Preview image
 
   let formInputs = {
     productName: {
@@ -73,6 +73,11 @@ const EditProduct = () => {
       message: useRef(),
     },
     priceFinal: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
+    mainImage: {
       group: useRef(),
       input: useRef(),
       message: useRef(),
@@ -133,28 +138,17 @@ const EditProduct = () => {
     setProduct({ ...product, priceFinal });
   }, [product.priceGross, product.discount, product.taxes]);
 
-  // create a preview as a side effect, whenever selected file is changed
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-
-    // free memory when ever this component is unmounted
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
-
-  const onSelectFile = (e) => {
+  const onSelectFile = async (e) => {
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;
     }
 
-    // I've kept this example simple by using the first image instead of multiple
-    setSelectedFile(e.target.files[0]);
+    let base64Image = await Functions.fileToBase64(e.target.files[0]);
+
+    setSelectedFile(base64Image);
+
+    return base64Image;
   };
 
   //Get product data
@@ -302,6 +296,28 @@ const EditProduct = () => {
     setFormValidation(cumple);
   }
 
+  async function saveProduct(e) {
+    e.preventDefault();
+    if (formValidation) {
+      console.log(product);
+
+      if (id) {
+        //Edicion de un producto
+        try {
+          await ProductsService.update(id, product);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        try {
+          await ProductsService.create(product);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  }
+
   return (
     <Fragment>
       <div className="row text-center offset-md-2">
@@ -318,7 +334,7 @@ const EditProduct = () => {
                   src={
                     product.images &&
                     product.images.find((image) => image.isMain) &&
-                    !preview
+                    !selectedFile
                       ? `${
                           URL_IMAGES_PRODUCTS +
                           (product.images
@@ -326,7 +342,7 @@ const EditProduct = () => {
                                 .pathImagen
                             : "")
                         }`
-                      : preview
+                      : selectedFile
                   }
                   alt="mainImage"
                 />
@@ -425,13 +441,7 @@ const EditProduct = () => {
       )}
 
       {/**Formulario */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log(product);
-        }}
-        enctype="multipart/form-data"
-      >
+      <form onSubmit={saveProduct}>
         <div className="row">
           <div className="col-md-4 offset-md-2 mb-3">
             <div className="card">
@@ -601,7 +611,7 @@ const EditProduct = () => {
                   ></div>
                 </div>
                 {/**mainImage */}
-                <div className="form-group">
+                <div className="form-group" ref={formInputs.mainImage.group}>
                   <label
                     for="mainImage"
                     className="form-label mt-4 font-weight-bold"
@@ -614,8 +624,19 @@ const EditProduct = () => {
                     id="mainImage"
                     name="mainImage"
                     accept="image/png, .jpg, .jpeg, image/gif"
-                    onChange={onSelectFile}
+                    ref={formInputs.mainImage.input}
+                    onChange={async (e) => {
+                      let image = await onSelectFile(e);
+                      onChangeProductData("mainImage", image);
+                      validationFormFields(image, "mainImage", [
+                        VALIDATIONS_TYPES.NotEmpty,
+                      ]);
+                    }}
                   />
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.mainImage.message}
+                  ></div>
                 </div>
                 {/**isActive */}
                 <fieldset className="form-group">
@@ -703,6 +724,7 @@ const EditProduct = () => {
                         }
                       }
                       onChangeProductData("taxes", value);
+                      setFormValidation(true);
                     }}
                   >
                     <option value="">N/A</option>

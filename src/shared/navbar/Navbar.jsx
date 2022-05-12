@@ -4,13 +4,13 @@ import {
   faPlus,
   faSignInAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 
-export default function Navbar() {
+export default function Navbar({user}) {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
 
@@ -51,52 +51,69 @@ export default function Navbar() {
             type="button"
             aria-controls="navbarNav"
             aria-label="Toggle navigation"
-            onClick={()=> setOpen(!open) }
-            aria-expanded={open}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
+          
           <div className="collapse navbar-collapse" id="navbarNav">
+
             <ul className="navbar-nav ml-auto">
+
               <li className="nav-item"></li>
-              <li
-                className="nav-item dropdown"
-                onClick={() => {
-                  showProductsMenu(productsDropdown);
-                }}
-              >
-                <div
-                  className="nav-link dropdown-toggle show"
-                  data-bs-toggle="dropdown"
-                  href="/"
-                  role="button"
-                  aria-haspopup="true"
-                  aria-expanded="true"
-                >
-                  Productos
+
+              <li className="nav-item dropdown">
+
+                <div className="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="/" role="button" aria-haspopup="true" aria-expanded="true">
+                Productos
                 </div>
+
                 <div
                   className="dropdown-menu show"
                   data-bs-popper="none"
                   ref={productsDropdown}
                 >
-                  <Link
-                    className="dropdown-item"
-                    aria-current="page"
-                    to="/products-list"
-                  >
-                    <FontAwesomeIcon icon={faBoxesStacked} /> &nbsp; Ver
-                    Productos
-                  </Link>
-                  <Link
-                    className="dropdown-item"
-                    aria-current="page"
-                    to="/create-product"
-                  >
-                    <FontAwesomeIcon icon={faPlus} /> &nbsp; Crear Producto
-                  </Link>
+
                 </div>
               </li>
+
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  aria-current="page"
+                  to="/products-list">
+                  <FontAwesomeIcon icon={faBoxesStacked} size="lg" /> &nbsp; Ver todos
+                </Link>              
+              </li>
+
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  aria-current="page"
+                  to="/create-product">
+                  <FontAwesomeIcon icon={faPlus} size="lg" /> &nbsp; Crear
+                </Link>
+              </li>
+
+              { (!user) ? 
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  aria-current="page"
+                  to="/login">
+                  <FontAwesomeIcon icon={faSignInAlt} size="lg" /> &nbsp; Login
+                </Link>
+              </li>
+              :
+              <li className="nav-item">
+                <Link
+                  className="nav-link rounded-circle"
+                  aria-current="page"
+                  to="/login">
+                  <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp; {user.firstName}
+                </Link>
+              </li>
+              }
+              
             </ul>
           </div>
         </div>

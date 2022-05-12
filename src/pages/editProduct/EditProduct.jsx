@@ -272,13 +272,8 @@ const EditProduct = () => {
 
   return (
     <Fragment>
-<<<<<<< HEAD
-      <div className="justify-content-center">
-        <h1 className="text-black-50 h3 text-capitalize">Crear Producto</h1>
-=======
       <div className="row text-center offset-md-2">
         <h1>{componentTitle}</h1>
->>>>>>> 7a79339b96388753f84f652f04f650b1de0ee312
       </div>
       {/**Visualizacion del producto */}
       {id ? (

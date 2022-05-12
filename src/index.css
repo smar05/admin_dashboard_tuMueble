@@ -10,7 +10,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e5e5e5;
-  min-height: 100vh;
 }
 
 /* code {

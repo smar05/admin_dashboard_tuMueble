@@ -10,6 +10,7 @@ import ProductCategoryService from "../../services/ProductCategoryService";
 import ProductsService from "../../services/ProductsService";
 import { useLocation } from "react-router-dom";
 import { URL_IMAGES_PRODUCTS } from "../../common/ConstData";
+import { Functions } from "../../common/Functions";
 
 const EditProduct = () => {
   const location = useLocation();
@@ -28,11 +29,13 @@ const EditProduct = () => {
     unitsBuyes: null,
   };
 
-  let { id } = useParams();
+  let { id } = useParams(); //Id product by url
   let [product, setProduct] = useState(initProduct);
   let [productCategories, setProductCategories] = useState([]);
   let [taxes, setTaxes] = useState([]);
-  let [formValidation, setFormValidation] = useState(true); //Validacion del formulario
+  let [formValidation, setFormValidation] = useState(false); //Validacion del formulario
+  let [selectedFile, setSelectedFile] = useState(); //Selected image
+
   let formInputs = {
     productName: {
       group: useRef(),
@@ -74,6 +77,11 @@ const EditProduct = () => {
       input: useRef(),
       message: useRef(),
     },
+    mainImage: {
+      group: useRef(),
+      input: useRef(),
+      message: useRef(),
+    },
   };
 
   //Type of field data
@@ -100,10 +108,15 @@ const EditProduct = () => {
 
   //Location change
   useEffect(() => {
+    console.log("a: " + location.pathname);
     if (location.pathname === "/create-product") {
       setProduct(initProduct);
-    } else {
+      setComponentTitle("Crear Producto");
+      console.log("b: " + location.pathname);
+    } else if (location.pathname === `/edit-product/${id}`) {
       setComponentTitle("Editar Producto");
+
+      console.log("c: " + location.pathname);
     }
   }, [location]);
 
@@ -124,6 +137,19 @@ const EditProduct = () => {
       ) / 100;
     setProduct({ ...product, priceFinal });
   }, [product.priceGross, product.discount, product.taxes]);
+
+  const onSelectFile = async (e) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setSelectedFile(undefined);
+      return;
+    }
+
+    let base64Image = await Functions.fileToBase64(e.target.files[0]);
+
+    setSelectedFile(base64Image);
+
+    return base64Image;
+  };
 
   //Get product data
   function getProductData() {
@@ -270,6 +296,28 @@ const EditProduct = () => {
     setFormValidation(cumple);
   }
 
+  async function saveProduct(e) {
+    e.preventDefault();
+    if (formValidation) {
+      console.log(product);
+
+      if (id) {
+        //Edicion de un producto
+        try {
+          await ProductsService.update(id, product);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        try {
+          await ProductsService.create(product);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+  }
+
   return (
     <Fragment>
 <<<<<<< HEAD
@@ -288,12 +336,19 @@ const EditProduct = () => {
               <div className="card card-body text-center">
                 <h3 className="font-weight-bold">{product.productName} </h3>
                 <img
-                  src={`${
-                    URL_IMAGES_PRODUCTS +
-                    (product.images
-                      ? product.images.find((image) => image.isMain).pathImagen
-                      : "")
-                  }`}
+                  src={
+                    product.images &&
+                    product.images.find((image) => image.isMain) &&
+                    !selectedFile
+                      ? `${
+                          URL_IMAGES_PRODUCTS +
+                          (product.images
+                            ? product.images.find((image) => image.isMain)
+                                .pathImagen
+                            : "")
+                        }`
+                      : selectedFile
+                  }
                   alt="mainImage"
                 />
                 <p>
@@ -391,7 +446,7 @@ const EditProduct = () => {
       )}
 
       {/**Formulario */}
-      <form>
+      <form onSubmit={saveProduct}>
         <div className="row">
           <div className="col-md-4 offset-md-2 mb-3">
             <div className="card">
@@ -561,7 +616,7 @@ const EditProduct = () => {
                   ></div>
                 </div>
                 {/**mainImage */}
-                <div className="form-group">
+                <div className="form-group" ref={formInputs.mainImage.group}>
                   <label
                     for="mainImage"
                     className="form-label mt-4 font-weight-bold"
@@ -573,7 +628,20 @@ const EditProduct = () => {
                     type="file"
                     id="mainImage"
                     name="mainImage"
+                    accept="image/png, .jpg, .jpeg, image/gif"
+                    ref={formInputs.mainImage.input}
+                    onChange={async (e) => {
+                      let image = await onSelectFile(e);
+                      onChangeProductData("mainImage", image);
+                      validationFormFields(image, "mainImage", [
+                        VALIDATIONS_TYPES.NotEmpty,
+                      ]);
+                    }}
                   />
+                  <div
+                    class="invalid-feedback"
+                    ref={formInputs.mainImage.message}
+                  ></div>
                 </div>
                 {/**isActive */}
                 <fieldset className="form-group">
@@ -661,6 +729,7 @@ const EditProduct = () => {
                         }
                       }
                       onChangeProductData("taxes", value);
+                      setFormValidation(true);
                     }}
                   >
                     <option value="">N/A</option>

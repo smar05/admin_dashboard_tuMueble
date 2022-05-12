@@ -15,6 +15,8 @@ function UserDetail({user}){
             console.log("ESto me llego", resp)
         }).catch(error=>console.error(error));
 
+    
+
     return (
         <form className="form col-12 col-sm-10 col-md-8 d-flex flex-column" onSubmit={(e)=>{
             alert("me Envie");

@@ -36,4 +36,30 @@ export default class ProductsService {
         console.error(err);
       });
   };
+
+  static create = (product) => {
+    if (!product) return null;
+
+    return fetch(`${API_PRODUCTS}/create`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+  };
+
+  static update = (productId, product) => {
+    if (!productId) return null;
+
+    return fetch(`${API_PRODUCTS}/edit/${productId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+  };
 }

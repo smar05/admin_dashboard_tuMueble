@@ -14,6 +14,9 @@ export default function Navbar({user}) {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
 
+  //Referencia al menu desplgable del navbar
+  let navbarDropdown = useRef();
+
   //Begin component
   useEffect(() => {
     //El menu se inicializa cerrado
@@ -26,7 +29,7 @@ export default function Navbar({user}) {
    * @param {useRef} itemRef html item for display
    * @return {boolean} if the item was open or close
    */
-  function showProductsMenu(itemRef) {
+  function showItem(itemRef) {
     //Despliega el menu
     if (itemRef.current.style.display === "none") {
       itemRef.current.style.display = "block";
@@ -51,20 +54,35 @@ export default function Navbar({user}) {
             type="button"
             aria-controls="navbarNav"
             aria-label="Toggle navigation"
+            onClick={() => {
+              showItem(navbarDropdown);
+            }}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          
-          <div className="collapse navbar-collapse" id="navbarNav">
-
+          <div
+            className="collapse navbar-collapse"
+            id="navbarNav"
+            ref={navbarDropdown}
+          >
             <ul className="navbar-nav ml-auto">
 
               <li className="nav-item"></li>
-
-              <li className="nav-item dropdown">
-
-                <div className="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="/" role="button" aria-haspopup="true" aria-expanded="true">
-                Productos
+              <li
+                className="nav-item dropdown"
+                onClick={() => {
+                  showItem(productsDropdown);
+                }}
+              >
+                <div
+                  className="nav-link dropdown-toggle show"
+                  data-bs-toggle="dropdown"
+                  href="/"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="true"
+                >
+                  Productos
                 </div>
 
                 <div

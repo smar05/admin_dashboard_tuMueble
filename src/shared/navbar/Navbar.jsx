@@ -9,8 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-
-export default function Navbar({user}) {
+export default function Navbar({ user }) {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
 
@@ -66,7 +65,6 @@ export default function Navbar({user}) {
             ref={navbarDropdown}
           >
             <ul className="navbar-nav ml-auto">
-
               <li className="nav-item"></li>
               <li
                 className="nav-item dropdown"
@@ -90,48 +88,43 @@ export default function Navbar({user}) {
                   data-bs-popper="none"
                   ref={productsDropdown}
                 >
-
+                  <Link
+                    className="dropdown-item"
+                    aria-current="page"
+                    to="/products-list"
+                  >
+                    <FontAwesomeIcon icon={faBoxesStacked} size="lg" /> &nbsp;
+                    Ver todos
+                  </Link>
+                  <Link
+                    className="dropdown-item"
+                    aria-current="page"
+                    to="/create-product"
+                  >
+                    <FontAwesomeIcon icon={faPlus} size="lg" /> &nbsp; Crear
+                  </Link>
                 </div>
               </li>
 
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  aria-current="page"
-                  to="/products-list">
-                  <FontAwesomeIcon icon={faBoxesStacked} size="lg" /> &nbsp; Ver todos
-                </Link>              
-              </li>
-
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  aria-current="page"
-                  to="/create-product">
-                  <FontAwesomeIcon icon={faPlus} size="lg" /> &nbsp; Crear
-                </Link>
-              </li>
-
-              { (!user) ? 
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  aria-current="page"
-                  to="/login">
-                  <FontAwesomeIcon icon={faSignInAlt} size="lg" /> &nbsp; Login
-                </Link>
-              </li>
-              :
-              <li className="nav-item">
-                <Link
-                  className="nav-link rounded-circle"
-                  aria-current="page"
-                  to="/login">
-                  <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp; {user.firstName}
-                </Link>
-              </li>
-              }
-              
+              {!user ? (
+                <li className="nav-item">
+                  <Link className="nav-link" aria-current="page" to="/login">
+                    <FontAwesomeIcon icon={faSignInAlt} size="lg" /> &nbsp;
+                    Login
+                  </Link>
+                </li>
+              ) : (
+                <li className="nav-item">
+                  <Link
+                    className="nav-link rounded-circle"
+                    aria-current="page"
+                    to="/login"
+                  >
+                    <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp;{" "}
+                    {user.firstName}
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>

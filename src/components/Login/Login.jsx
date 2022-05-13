@@ -1,24 +1,73 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { URL_BACK } from "../../common/ConstData.js";
+import alert from "sweetalert2";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [pwd, setPwd] = useState("");
+  
+  let navigate= useNavigate();
 
-  const data = {
-    emaild: email,
-    pwd: pwd,
-  };
+  const [login, setLogin] = useState({
+    email:"",
+    pwd:""
+  });
+  
+  //Store object login on events from inputs 
+  const handleInputs = (eventObj) => {
+    setLogin({
+      ...login,
+      [eventObj.target.name]:eventObj.target.value
+    })
+  }
+
+  //Execute the object to backend
+   const postLogin = async () => {
+
+    await fetch(`${URL_BACK}api/login`, {
+      method:"POST",
+      mode: "cors",
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(login),
+      }
+    )
+    .then(response => {
+      return response.json();
+    }) 
+    .then(response =>{
+      let {errors} = response;
+
+      if (errors) {
+        let err = errors[0].msg || errors;
+        alert.fire({
+          icon:"error",
+          title:"error",
+          text: err
+        })
+      } else {
+        alert.fire({
+          icon:"success",
+          timer:1000
+        });
+        localStorage.setItem("auth",response.auth);
+        navigate("/",{replace:true});
+      } 
+    })
+    .catch(err => alert.fire({
+      icon:"error",
+      title:"Ha ocurrido un error al momento de loguearse",
+      text: err
+    }));
+  }
 
   return (
     <form
-      method="POST"
-      action="/api/login"
       id="Login"
       className="mt-5 col-sm-12 col-md-8 d-flex flex-column"
-      onSubmit={(e) => {
+      onSubmit={ async (e) => {
         e.preventDefault();
-        console.log(e);
+        await postLogin();
       }}
     >
       <div className="row mb-4 justify-content-center">
@@ -35,7 +84,8 @@ function Login() {
           className="form-control  text-center rounded-lg"
           style={{ fontSize: "16px" }}
           required
-          onChange={e=> setEmail(e.target.value) }
+          onChange={e=> handleInputs(e) }
+          onLostPointerCapture={e=> handleInputs(e) }
         />
         <label className="form-label h6 mt-3 text-black-50" for="email">
           Email
@@ -50,7 +100,8 @@ function Login() {
           className="form-control  text-center rounded-lg"
           style={{ fontSize: "16px" }}
           required
-          onChange={e=> setPwd(e.target.value) }
+          onChange={e=> handleInputs(e) }
+          onLostPointerCapture={e=> handleInputs(e) }
         />
         <label className="form-label h6 mt-3 text-black-50" for="pwd">
           Password

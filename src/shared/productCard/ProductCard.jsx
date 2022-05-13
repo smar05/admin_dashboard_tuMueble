@@ -2,10 +2,31 @@ import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { Alerts } from "../../common/Alerts";
 import { URL_IMAGES_PRODUCTS } from "../../common/ConstData";
+import ProductsService from "../../services/ProductsService.js";
 
 function ProductCard(props) {
   let product = props.product ? JSON.parse(props.product) : {};
+
+  function eliminarProducto(idProduct) {
+    Alerts.confirmAlert(
+      "¿Esta seguro de eliminar este producto?",
+      "Este proceso no se podra retornar",
+      "warning",
+      "Si"
+    ).then((result) => {
+      if (result.isConfirmed) {
+        ProductsService.delete(idProduct)
+          .then((res) => {
+            Alerts.basicAlert("Producto eliminado", "");
+          })
+          .catch((error) => {
+            Alerts.basicAlert("Ha ocurrido un error", "");
+          });
+      }
+    });
+  }
 
   return (
     <Fragment>
@@ -22,7 +43,12 @@ function ProductCard(props) {
       "
         >
           {product.productName}
-          <button className="btn btn-danger rounded">
+          <button
+            className="btn btn-danger rounded"
+            onClick={() => {
+              eliminarProducto(product.id);
+            }}
+          >
             <FontAwesomeIcon icon={faTrashCan} size="2x" />
           </button>
         </div>

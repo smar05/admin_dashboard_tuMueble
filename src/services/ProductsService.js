@@ -62,4 +62,16 @@ export default class ProductsService {
       body: JSON.stringify(product),
     });
   };
+
+  static delete = (productId) => {
+    if (!productId) return null;
+
+    return fetch(`${API_PRODUCTS}/delete/${productId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+  };
 }

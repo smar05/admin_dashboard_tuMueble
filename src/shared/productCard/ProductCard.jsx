@@ -1,4 +1,9 @@
-import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleCheck,
+  faCircleXmark,
+  faPencil,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
@@ -74,6 +79,19 @@ function ProductCard(props) {
           <p>
             <span className="font-weight-bold">Precio Final:</span> $
             {product.priceFinal}
+          </p>
+          <p>
+            <span className="font-weight-bold">Activo: </span>
+
+            {product.isActive ? (
+              <Fragment>
+                <FontAwesomeIcon icon={faCircleCheck} color="#4BB543" />
+              </Fragment>
+            ) : (
+              <Fragment>
+                <FontAwesomeIcon icon={faCircleXmark} color="#BB2124" />
+              </Fragment>
+            )}
           </p>
           <Link
             className="btn btn-info btn-block rounded"

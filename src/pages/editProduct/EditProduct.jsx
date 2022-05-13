@@ -11,6 +11,7 @@ import ProductsService from "../../services/ProductsService";
 import { useLocation } from "react-router-dom";
 import { URL_IMAGES_PRODUCTS } from "../../common/ConstData";
 import { Functions } from "../../common/Functions";
+import { Alerts } from "../../common/Alerts";
 
 const EditProduct = () => {
   const location = useLocation();
@@ -305,13 +306,17 @@ const EditProduct = () => {
         //Edicion de un producto
         try {
           await ProductsService.update(id, product);
+          Alerts.basicAlert("Producto Actualizado", "");
         } catch (error) {
+          Alerts.basicAlert("Ha ocurrido un error");
           console.error(error);
         }
       } else {
         try {
           await ProductsService.create(product);
+          Alerts.basicAlert("Producto Creado", "");
         } catch (error) {
+          Alerts.basicAlert("Ha ocurrido un error");
           console.error(error);
         }
       }
@@ -649,6 +654,7 @@ const EditProduct = () => {
                       checked={product.isActive}
                       onChange={(e) => {
                         onChangeProductData("isActive", e.target.checked);
+                        setFormValidation(true);
                       }}
                     />
                     <label

@@ -6,21 +6,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import {Collapse} from "bootstrap";
 
 export default function Navbar({ user }) {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
 
-  //Referencia al menu desplgable del navbar
-  let navbarDropdown = useRef();
+  // //Referencia al menu desplgable del navbar
+  // let navbarDropdown = useRef();
 
-  //Begin component
-  useEffect(() => {
-    //El menu se inicializa cerrado
-    productsDropdown.current.style.display = "none";
-  }, []);
+  // //Begin component
+  // useEffect(() => {
+  //   //El menu se inicializa cerrado
+  //   productsDropdown.current.style.display = "none";
+  // }, []);
 
   /**
    * Function for display or close a htm item
@@ -28,16 +29,24 @@ export default function Navbar({ user }) {
    * @param {useRef} itemRef html item for display
    * @return {boolean} if the item was open or close
    */
-  function showItem(itemRef) {
-    //Despliega el menu
-    if (itemRef.current.style.display === "none") {
-      itemRef.current.style.display = "block";
-      return true;
-    }
-    //Oculta el menu
-    itemRef.current.style.display = "none";
-    return false;
-  }
+  // function showItem(itemRef) {
+  //   //Despliega el menu
+  //   if (itemRef.current.style.display === "none") {
+  //     itemRef.current.style.display = "block";
+  //     return true;
+  //   }
+  //   //Oculta el menu
+  //   itemRef.current.style.display = "none";
+  //   return false;
+  // }
+
+  const [ toggle, setToggle] = useState(false);
+
+  useEffect(()=>{
+      const myCollapse=document.getElementById("navbarNav");
+      const bsCollapse= new Collapse(myCollapse,{toggle:false});
+      toggle ? bsCollapse.show() : bsCollapse.hide();
+  });
 
   return (
     <header>
@@ -53,8 +62,9 @@ export default function Navbar({ user }) {
             type="button"
             aria-controls="navbarNav"
             aria-label="Toggle navigation"
+            aria-expanded="false"
             onClick={() => {
-              showItem(navbarDropdown);
+              setToggle(toggle =>!toggle);
             }}
           >
             <span className="navbar-toggler-icon"></span>
@@ -62,14 +72,14 @@ export default function Navbar({ user }) {
           <div
             className="collapse navbar-collapse"
             id="navbarNav"
-            ref={navbarDropdown}
+            in={toggle}
           >
             <ul className="navbar-nav ml-auto">
               <li className="nav-item"></li>
               <li
                 className="nav-item dropdown"
                 onClick={() => {
-                  showItem(productsDropdown);
+                  // showItem(productsDropdown);
                 }}
               >
                 <div
@@ -86,7 +96,7 @@ export default function Navbar({ user }) {
                 <div
                   className="dropdown-menu show"
                   data-bs-popper="none"
-                  ref={productsDropdown}
+                  // ref={productsDropdown}
                 >
                   <Link
                     className="dropdown-item"

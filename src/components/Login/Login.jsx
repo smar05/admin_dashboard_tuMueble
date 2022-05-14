@@ -54,9 +54,6 @@ function Login() {
         });
         localStorage.setItem("auth",response.auth);
         navigate("/",{replace:true});
-        render(
-          <h1>No me crea MK</h1>
-        )
       } 
     })
     .catch(err => alert.fire({

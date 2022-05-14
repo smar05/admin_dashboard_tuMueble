@@ -17,7 +17,7 @@ export default function Navbar({ user }) {
   // //Referencia al menu desplgable del navbar
   // let navbarDropdown = useRef();
 
-  // //Begin component
+  //Begin component
   // useEffect(() => {
   //   //El menu se inicializa cerrado
   //   productsDropdown.current.style.display = "none";

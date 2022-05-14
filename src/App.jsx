@@ -13,7 +13,7 @@ function App() {
 
       <BrowserRouter>
         <div className="d-flex flex-column justify-content-center">
-          <Navbar />
+          <Navbar user="" />
           <div className="container p-4 d-flex flex-column align-items-center">
             <Routes>
               <Route path="/" exact={true} element={<Home />} />

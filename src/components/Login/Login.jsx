@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { URL_BACK } from "../../common/ConstData.js";
 import alert from "sweetalert2";
+import { render } from "react-dom";
+import Navbar from "../../shared/navbar/Navbar";
 
 function Login() {
   
@@ -52,6 +54,9 @@ function Login() {
         });
         localStorage.setItem("auth",response.auth);
         navigate("/",{replace:true});
+        render(
+          <h1>No me crea MK</h1>
+        )
       } 
     })
     .catch(err => alert.fire({

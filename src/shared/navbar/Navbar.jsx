@@ -3,14 +3,19 @@ import {
   faCouch,
   faPlus,
   faSignInAlt,
+  faBasketShopping,
+  faLongArrowRight,
+  faRightToBracket
+
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext, Fragment } from "react";
 import { NavLink } from "react-router-dom";
 import {Collapse} from "bootstrap";
+import { UserContext } from "../../context/user.context.js";
 
-export default function Navbar({ user }) {
+export default function Navbar() {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
 
@@ -40,6 +45,11 @@ export default function Navbar({ user }) {
   //   return false;
   // }
 
+
+  const {user, setUser} = useContext(UserContext);
+
+
+  //Handle toggle button menu navbar hidden
   const [ toggle, setToggle] = useState(false);
 
   useEffect(()=>{
@@ -52,7 +62,7 @@ export default function Navbar({ user }) {
     <header>
       <nav className="navbar navbar-expand-md navbar-dark bg-dark py-2 shadow">
         <div className="container-fluid">
-          <NavLink activeClassName="active"  className="navbar-brand text-white-50" exact to="/">
+          <NavLink activeClassName="active" exact className="navbar-brand text-white-50" to="/">
             <FontAwesomeIcon icon={faCouch} className="" />
             <span className="mx-3">|</span>
             TuMueble
@@ -116,7 +126,7 @@ export default function Navbar({ user }) {
                 </div>
               </li>
 
-              {!user ? (
+              {user==null ? (
                 <li className="nav-item">
                   <NavLink activeClassName="active" className="nav-link" aria-current="page" to="/login">
                     <FontAwesomeIcon icon={faSignInAlt} size="lg" /> &nbsp;
@@ -124,17 +134,50 @@ export default function Navbar({ user }) {
                   </NavLink>
                 </li>
               ) : (
-                <li className="nav-item">
-                  <NavLink
-                    activeClassName="active"
-                    className="nav-link rounded-circle"
-                    aria-current="page"
-                    to="/login"
-                  >
-                    <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp;{" "}
-                    {user.firstName}
-                  </NavLink>
-                </li>
+
+                <Fragment>
+                  
+                  {(user.isAdmin!==1) ? 
+                    <Fragment>
+                      <li className="nav-item">
+                        <NavLink activeClassName="active" className="nav-link" aria-current="page" to="/user/cart">
+                          <FontAwesomeIcon icon={faBasketShopping} size="lg" /> &nbsp;
+                          Cesta
+                        </NavLink>
+                      </li>
+
+                      <li className="nav-item">
+                        <NavLink
+                          activeClassName="active"
+                          className="nav-link rounded-circle"
+                          aria-current="page"
+                          to="/user/dashboard">
+
+                          <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp;{" "}
+                          {user.name}
+                          
+                        </NavLink>
+                      </li>
+                      </Fragment>
+                  :
+                    <li className="nav-item">
+                      <NavLink
+                        activeClassName="active"
+                        className="nav-link rounded-circle"
+                        aria-current="page"
+                        to="/admin/dashboard"
+                      >
+                        <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp;{" "}
+                        {user.name}
+                      </NavLink>
+                    </li>
+                  }
+
+                  <button className="btn btn-danger rounded p-1" onClick={()=>setUser(null)}>
+                  <FontAwesomeIcon icon={faRightToBracket} size="xl" /> &nbsp;{" "}
+                    Logout
+                  </button>
+                </Fragment>
               )}
             </ul>
           </div>

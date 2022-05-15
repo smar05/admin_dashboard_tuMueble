@@ -7,15 +7,37 @@ import Home from "./pages/home/Home";
 import ProductsList from "./pages/productsList/ProductsList";
 import Footer from "./shared/footer/Footer";
 import Navbar from "./shared/navbar/Navbar";
-import {UserContext} from "./context/user.context.js";
+import { UserContext } from "./context/user.context.js";
+import { useState, useEffect } from "react";
 
 function App() {
+
+  /**
+   * The strucutre de user is
+   * {
+   *  name: some name
+   *  imagen: some imagen
+   *  isAdmin: 0 user, 1 admin
+   * }
+   */
+  const [user, setUser] = useState(null);
+
+  useEffect(()=>{
+    console.log("Se actualizo la información del usuario");
+    console.log("Usuario Logueado", user);
+  },[user])
+
+
+
   return (
 
+    <UserContext.Provider value={{
+      user,
+      setUser
+    }}>
       <BrowserRouter>
-        <UserContext.Provider>
-          <div className="d-flex flex-column justify-content-center">
-            <Navbar user="" />
+        <div className="d-flex flex-column justify-content-center">
+          <Navbar user="" />
             <div className="container p-4 d-flex flex-column align-items-center">
               <Routes>
                 <Route path="/" exact={true} element={<Home />} />
@@ -27,11 +49,10 @@ function App() {
                 <Route path="*" exact={true} element={<Error404 />} />
               </Routes>
             </div>
-            <Footer />
-          </div>
-        </UserContext.Provider>
+          <Footer />
+        </div>
       </BrowserRouter>
-
+    </UserContext.Provider>
   );
 }
 

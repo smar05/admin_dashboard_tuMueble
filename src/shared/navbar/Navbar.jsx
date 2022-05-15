@@ -7,7 +7,7 @@ import {
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {Collapse} from "bootstrap";
 
 export default function Navbar({ user }) {
@@ -46,17 +46,17 @@ export default function Navbar({ user }) {
       const myCollapse=document.getElementById("navbarNav");
       const bsCollapse= new Collapse(myCollapse,{toggle:false});
       toggle ? bsCollapse.show() : bsCollapse.hide();
-  });
+  },[toggle]);
 
   return (
     <header>
       <nav className="navbar navbar-expand-md navbar-dark bg-dark py-2 shadow">
         <div className="container-fluid">
-          <Link className="navbar-brand text-white-50" to="/">
+          <NavLink activeClassName="active"  className="navbar-brand text-white-50" exact to="/">
             <FontAwesomeIcon icon={faCouch} className="" />
             <span className="mx-3">|</span>
             TuMueble
-          </Link>
+          </NavLink>
           <button
             className="navbar-toggler"
             type="button"
@@ -98,41 +98,42 @@ export default function Navbar({ user }) {
                   data-bs-popper="none"
                   // ref={productsDropdown}
                 >
-                  <Link
+                  <NavLink
                     className="dropdown-item"
                     aria-current="page"
                     to="/products-list"
                   >
                     <FontAwesomeIcon icon={faBoxesStacked} size="lg" /> &nbsp;
                     Ver todos
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     className="dropdown-item"
                     aria-current="page"
                     to="/create-product"
                   >
                     <FontAwesomeIcon icon={faPlus} size="lg" /> &nbsp; Crear
-                  </Link>
+                  </NavLink>
                 </div>
               </li>
 
               {!user ? (
                 <li className="nav-item">
-                  <Link className="nav-link" aria-current="page" to="/login">
+                  <NavLink activeClassName="active" className="nav-link" aria-current="page" to="/login">
                     <FontAwesomeIcon icon={faSignInAlt} size="lg" /> &nbsp;
                     Login
-                  </Link>
+                  </NavLink>
                 </li>
               ) : (
                 <li className="nav-item">
-                  <Link
+                  <NavLink
+                    activeClassName="active"
                     className="nav-link rounded-circle"
                     aria-current="page"
                     to="/login"
                   >
                     <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp;{" "}
                     {user.firstName}
-                  </Link>
+                  </NavLink>
                 </li>
               )}
             </ul>

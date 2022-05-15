@@ -7,13 +7,13 @@ import Home from "./pages/home/Home";
 import ProductsList from "./pages/productsList/ProductsList";
 import Footer from "./shared/footer/Footer";
 import Navbar from "./shared/navbar/Navbar";
-import {UserContextProvider} from "./context/user.context.js";
+import {UserContext} from "./context/user.context.js";
 
 function App() {
   return (
 
       <BrowserRouter>
-        <UserContextProvider>
+        <UserContext.Provider>
           <div className="d-flex flex-column justify-content-center">
             <Navbar user="" />
             <div className="container p-4 d-flex flex-column align-items-center">
@@ -29,7 +29,7 @@ function App() {
             </div>
             <Footer />
           </div>
-        </UserContextProvider>
+        </UserContext.Provider>
       </BrowserRouter>
 
   );

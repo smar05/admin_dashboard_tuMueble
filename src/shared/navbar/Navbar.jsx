@@ -4,15 +4,15 @@ import {
   faPlus,
   faSignInAlt,
   faBasketShopping,
-  faLongArrowRight,
-  faRightToBracket
-
+  faRightToBracket,
+  faRightFromBracket,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState, useContext, Fragment } from "react";
 import { NavLink } from "react-router-dom";
-import {Collapse} from "bootstrap";
+import { Collapse } from "bootstrap";
 import { UserContext } from "../../context/user.context.js";
 
 export default function Navbar() {
@@ -46,23 +46,28 @@ export default function Navbar() {
   // }
 
 
-  const {user, setUser} = useContext(UserContext);
 
+  const { user, setUser } = useContext(UserContext);
 
   //Handle toggle button menu navbar hidden
-  const [ toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(false);
 
-  useEffect(()=>{
-      const myCollapse=document.getElementById("navbarNav");
-      const bsCollapse= new Collapse(myCollapse,{toggle:false});
-      toggle ? bsCollapse.show() : bsCollapse.hide();
-  },[toggle]);
+  useEffect(() => {
+    const myCollapse = document.getElementById("navbarNav");
+    const bsCollapse = new Collapse(myCollapse, { toggle: false });
+    toggle ? bsCollapse.show() : bsCollapse.hide();
+  }, [toggle]);
 
   return (
     <header>
-      <nav className="navbar navbar-expand-md navbar-dark bg-dark py-2 shadow">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-2 shadow">
         <div className="container-fluid">
-          <NavLink activeClassName="active" exact className="navbar-brand text-white-50" to="/">
+          <NavLink
+            activeClassName="active"
+            exact
+            className="navbar-brand text-white-50"
+            to="/"
+          >
             <FontAwesomeIcon icon={faCouch} className="" />
             <span className="mx-3">|</span>
             TuMueble
@@ -74,18 +79,36 @@ export default function Navbar() {
             aria-label="Toggle navigation"
             aria-expanded="false"
             onClick={() => {
-              setToggle(toggle =>!toggle);
+              setToggle((toggle) => !toggle);
             }}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div
-            className="collapse navbar-collapse"
-            id="navbarNav"
-            in={toggle}
-          >
+          <div className="collapse navbar-collapse" id="navbarNav" in={toggle}>
             <ul className="navbar-nav ml-auto">
-              <li className="nav-item"></li>
+
+              <hr className="bg-body" />
+
+              
+                <form className="form">
+                  <div className="input-group" >
+                    <div className="input-group-prepend">
+                      <button className="input-group-text rounded-left px-3 form-control">
+                        <FontAwesomeIcon icon={faSearch} />
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      className="form-control rounded-right text-center"
+                      placeholder="Busca un producto..."
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      
+                    />
+                  </div>
+                </form>
+              
+
               <li
                 className="nav-item dropdown"
                 onClick={() => {
@@ -126,23 +149,31 @@ export default function Navbar() {
                 </div>
               </li>
 
-              {user==null ? (
+              {user == null ? (
                 <li className="nav-item">
-                  <NavLink activeClassName="active" className="nav-link" aria-current="page" to="/login">
+                  <NavLink
+                    activeClassName="active"
+                    className="nav-link"
+                    aria-current="page"
+                    to="/login"
+                  >
                     <FontAwesomeIcon icon={faSignInAlt} size="lg" /> &nbsp;
                     Login
                   </NavLink>
                 </li>
               ) : (
-
                 <Fragment>
-                  
-                  {(user.isAdmin!==1) ? 
+                  {user.isAdmin !== 1 ? (
                     <Fragment>
                       <li className="nav-item">
-                        <NavLink activeClassName="active" className="nav-link" aria-current="page" to="/user/cart">
-                          <FontAwesomeIcon icon={faBasketShopping} size="lg" /> &nbsp;
-                          Cesta
+                        <NavLink
+                          activeClassName="active"
+                          className="nav-link"
+                          aria-current="page"
+                          to="/user/cart"
+                        >
+                          <FontAwesomeIcon icon={faBasketShopping} size="lg" />{" "}
+                          &nbsp; Cesta
                         </NavLink>
                       </li>
 
@@ -151,15 +182,14 @@ export default function Navbar() {
                           activeClassName="active"
                           className="nav-link rounded-circle"
                           aria-current="page"
-                          to="/user/dashboard">
-
-                          <FontAwesomeIcon icon={faCircleUser} size="xl" /> &nbsp;{" "}
-                          {user.name}
-                          
+                          to="/user/dashboard"
+                        >
+                          <FontAwesomeIcon icon={faCircleUser} size="xl" />{" "}
+                          &nbsp; {user.name}
                         </NavLink>
                       </li>
-                      </Fragment>
-                  :
+                    </Fragment>
+                  ) : (
                     <li className="nav-item">
                       <NavLink
                         activeClassName="active"
@@ -171,11 +201,13 @@ export default function Navbar() {
                         {user.name}
                       </NavLink>
                     </li>
-                  }
+                  )}
 
-                  <button className="btn btn-danger rounded p-1" onClick={()=>setUser(null)}>
-                  <FontAwesomeIcon icon={faRightToBracket} size="xl" /> &nbsp;{" "}
-                    Logout
+                  <button
+                    className="btn btn-danger rounded py-1 px-3"
+                    onClick={() => setUser(null)}
+                  >
+                    <FontAwesomeIcon icon={faRightFromBracket} size="xl" />
                   </button>
                 </Fragment>
               )}

@@ -35,7 +35,7 @@ function ProductCard(props) {
 
   return (
     <Fragment>
-      <div className="card text-center my-3 rounded">
+      <div className="card text-center">
         <div
           className="
         card-header

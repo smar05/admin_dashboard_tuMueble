@@ -8,7 +8,7 @@ function Home() {
     setUser({
       name: "Diego",
       imagen: "/img/avatar.jpg",
-      isAdmin: 1,
+      isAdmin: 0,
     });
   };
   return (

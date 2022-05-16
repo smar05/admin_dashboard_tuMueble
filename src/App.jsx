@@ -8,7 +8,7 @@ import ProductsList from "./pages/productsList/ProductsList";
 import Footer from "./shared/footer/Footer";
 import Navbar from "./shared/navbar/Navbar";
 import { UserContext } from "./context/user.context.js";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function App() {
 
@@ -21,13 +21,6 @@ function App() {
    * }
    */
   const [user, setUser] = useState(null);
-
-  useEffect(()=>{
-    console.log("Se actualizo la información del usuario");
-    console.log("Usuario Logueado", user);
-  },[user])
-
-
 
   return (
 

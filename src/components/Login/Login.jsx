@@ -35,7 +35,7 @@ function Login() {
 
   //Execute the object to backend
   const postLogin = async () => {
-    await fetch(`${URL_BACK}api/login`, {
+    fetch(`${URL_BACK}api/login`, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -78,7 +78,7 @@ function Login() {
   return (
     <form
       id="Login"
-      className="mt-5 col-sm-12 col-md-8 d-flex flex-column"
+      className="my-5 col-sm-12 col-md-8 d-flex flex-column bg-white pt-3 rounded-lg shadow-lg px-4"
       onSubmit={async (e) => {
         e.preventDefault();
         await postLogin();
@@ -95,7 +95,7 @@ function Login() {
           type="email"
           id="email"
           name="email"
-          className="form-control  text-center rounded-lg"
+          className="form-control  text-center rounded-lg border"
           style={{ fontSize: "16px" }}
           required
           onChange={(e) => handleInputs(e)}
@@ -111,7 +111,7 @@ function Login() {
           type="password"
           id="pwd"
           name="pwd"
-          className="form-control  text-center rounded-lg"
+          className="form-control  text-center rounded-lg border"
           style={{ fontSize: "16px" }}
           required
           onChange={(e) => handleInputs(e)}

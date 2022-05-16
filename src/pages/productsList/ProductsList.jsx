@@ -23,9 +23,9 @@ function ProductsList() {
   return (
     <Fragment>
       <div classNameName="row">
-        <div className="d-flex">
+        <div className="d-flex ">
           <input
-            className="form-control me-sm-2"
+            className="form-control"
             type="text"
             placeholder="Ingrese un nombre de busqueda"
             onChange={(e) => {
@@ -42,11 +42,11 @@ function ProductsList() {
           </button>
         </div>
       </div>
-      <div classNameName="row">
+      <div classNameName="d-flex flex-row">
         {products.map((product, index) => {
           return (
             <Fragment key={index}>
-              <div classNameName="col-10 col-xs-8 col-sm-6 col-md-4 col-lg-3 mx-0">
+              <div classNameName="col-lg-3">
                 <ProductCard product={JSON.stringify(product)} />
               </div>
             </Fragment>

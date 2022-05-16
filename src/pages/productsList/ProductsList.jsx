@@ -24,6 +24,8 @@ function ProductsList() {
     <Fragment>
       <div classNameName="row">
         <div className="d-flex">
+      <div className="row">
+        <div className="d-flex">
           <input
             className="form-control me-sm-2"
             type="text"
@@ -42,16 +44,20 @@ function ProductsList() {
           </button>
         </div>
       </div>
-      <div classNameName="row">
-        {products.map((product, index) => {
-          return (
-            <Fragment key={index}>
-              <div classNameName="col-10 col-xs-8 col-sm-6 col-md-4 col-lg-3 mx-0">
-                <ProductCard product={JSON.stringify(product)} />
-              </div>
-            </Fragment>
-          );
-        })}
+      <div className="row">
+        {products && products.length > 0
+          ? products.map((product, index) => {
+              return (
+                <Fragment key={index}>
+                  <div className="col-10 col-xs-8 col-sm-6 col-md-4 col-lg-3 mx-0">
+                    <ProductCard product={JSON.stringify(product)} />
+                  </div>
+                </Fragment>
+              );
+            })
+          : () => {
+              return <Fragment></Fragment>;
+            }}
       </div>
     </Fragment>
   );

@@ -23,9 +23,9 @@ function ProductsList() {
   return (
     <Fragment>
       <div className="row">
-        <div class="d-flex">
+        <div className="d-flex">
           <input
-            class="form-control me-sm-2"
+            className="form-control me-sm-2"
             type="text"
             placeholder="Ingrese un nombre de busqueda"
             onChange={(e) => {
@@ -33,7 +33,7 @@ function ProductsList() {
             }}
           />
           <button
-            class="btn btn-secondary my-2 my-sm-0"
+            className="btn btn-secondary my-2 my-sm-0"
             onClick={() => {
               getAllProducts({ productName: filtroNombre });
             }}
@@ -43,15 +43,19 @@ function ProductsList() {
         </div>
       </div>
       <div className="row">
-        {products.map((product, index) => {
-          return (
-            <Fragment key={index}>
-              <div className="col-10 col-xs-8 col-sm-6 col-md-4 col-lg-3 mx-0">
-                <ProductCard product={JSON.stringify(product)} />
-              </div>
-            </Fragment>
-          );
-        })}
+        {products && products.length > 0
+          ? products.map((product, index) => {
+              return (
+                <Fragment key={index}>
+                  <div className="col-10 col-xs-8 col-sm-6 col-md-4 col-lg-3 mx-0">
+                    <ProductCard product={JSON.stringify(product)} />
+                  </div>
+                </Fragment>
+              );
+            })
+          : () => {
+              return <Fragment></Fragment>;
+            }}
       </div>
     </Fragment>
   );

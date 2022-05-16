@@ -22,8 +22,6 @@ function ProductsList() {
 
   return (
     <Fragment>
-      <div classNameName="row">
-        <div className="d-flex">
       <div className="row">
         <div className="d-flex">
           <input

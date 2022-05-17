@@ -1,8 +1,12 @@
 import { Fragment, useContext, useState } from "react";
 import { UserContext } from "../../context/user.context.js";
-import * as create from "../../services/users.services.js";
+import { URL_BACK } from "../../common/ConstData.js";
+import alert from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function UserDetail() {
+  let navigate = useNavigate();
+
   //Context State User Global
   const { user } = useContext(UserContext);
 
@@ -30,16 +34,61 @@ function UserDetail() {
     });
     console.log(bodyUser);
   };
+
+  //Create Users
+  const create = (newUser) =>{
+
+    fetch(`${URL_BACK}api/user/create`,{
+       method:"POST",
+       mode:"cors",
+       headers: {
+        "Content-Type": "application/json"
+    },
+       body: JSON.stringify(newUser)
+   })
+   .then(resp => {
+      console.log("Response antes del JSON", resp);
+     return resp.json()
+   })
+   .then(response => {
+    let { errors } = response;
+    console.log("Despues antes del JSON", response);
+
+    if (errors) {
+      let err = errors.map(err => err.msg) || errors;
+      alert.fire({
+        icon: "error",
+        title: "error",
+        text: err,
+      });
+    } else {
+      alert.fire({
+        icon: "success",
+        timer: 1000,
+      });
+      navigate("/login", { replace: true });
+    }
+   })
+   .catch(error => {
+       alert.fire({
+           icon:"error",
+           text:error,
+           color:error
+       })
+   })
+}
   
 
   return (
     <form
+      id="user"
       className="form col-12 col-sm-10 col-md-8 d-flex flex-column bg-white pt-3 mb-5 rounded-lg shadow-lg px-4"
-      encType="multipart/form-data"
+      method="POST"
       onSubmit={ (e) => {
         e.preventDefault();
-        const resp =  create(bodyUser);
-        console.log("Errores", resp);
+        let a=create(bodyUser);
+        console.log(a);
+
       }}
     >
       <span className="h4 text-black-50 mb-3 text-center">
@@ -133,7 +182,9 @@ function UserDetail() {
           style={{ fontSize: "16px" }}
           name="email"
           required
-          onChange={(e) => handleInputs(e)}
+          onChange={(e) => {
+            handleInputs(e)
+          }}
           onLostPointerCapture={(e) => handleInputs(e)}
         />
         <label

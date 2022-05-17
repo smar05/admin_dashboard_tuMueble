@@ -4,7 +4,6 @@ import {
   faPlus,
   faSignInAlt,
   faBasketShopping,
-  faRightToBracket,
   faRightFromBracket,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";

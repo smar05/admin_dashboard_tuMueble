@@ -12,11 +12,10 @@ user.create =(newUser) =>{
 
      const result =fetch(`${URL_BACK}api/user/create`,{
         method:"POST",
-        mode:"cors",
         headers: {
             "Content-Type": "application/json"
         },
-        body:newUser
+        body: JSON.stringify(newUser)
     })
     .then(resp => resp.json())
     .catch(error => {

@@ -1,47 +1,48 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ProductsService from "../../services/ProductsService";
 import ProductCard from "../../shared/productCard/ProductCard";
 
 function ProductsList() {
   let [products, setProducts] = useState([]);
-  let [filtroNombre, setFiltroNombre] = useState(null);
+  let location = useLocation();
 
   //Begin component
   useEffect(() => {
-    getAllProducts();
+    getAllProductsByQueryString();
   }, []);
+
+  useEffect(() => {
+    getAllProductsByQueryString();
+  }, [location.search]);
+
+  function getAllProductsByQueryString() {
+    let filterUrl = null;
+    if (location.search) {
+      filterUrl = location.search;
+    }
+    getAllProducts(filterUrl);
+  }
 
   //Trae todos los productos
   function getAllProducts(filter = null) {
-    ProductsService.findAll(filter).then((data) => {
-      setProducts(data.data);
-    });
+    ProductsService.findAll(filter)
+      .then((data) => {
+        if (data.status === 404) {
+          console.log("algo");
+          setProducts(null);
+        }
+        setProducts(data.data);
+      })
+      .catch((error) => {
+        setProducts(null);
+      });
   }
 
   return (
     <Fragment>
-      <div className="row">
-        <div className="d-flex">
-          <input
-            className="form-control"
-            type="text"
-            placeholder="Ingrese un nombre de busqueda"
-            onChange={(e) => {
-              setFiltroNombre(e.target.value);
-            }}
-          />
-          <button
-            className="btn btn-secondary my-2 my-sm-0"
-            onClick={() => {
-              getAllProducts({ productName: filtroNombre });
-            }}
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </button>
-        </div>
-      </div>
       <div className="row">
         {products && products.length > 0
           ? products.map((product, index) => {
@@ -54,7 +55,11 @@ function ProductsList() {
               );
             })
           : () => {
-              return <Fragment></Fragment>;
+              return (
+                <Fragment>
+                  <h1>No se encontraron productos</h1>
+                </Fragment>
+              );
             }}
       </div>
     </Fragment>

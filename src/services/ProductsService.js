@@ -11,10 +11,9 @@ export default class ProductsService {
    * @memberof ProductsService
    */
   static findAll = (filter = null) => {
-    return fetch(
-      `${API_PRODUCTS}${filter ? `?${new URLSearchParams(filter)}` : ""}`,
-      { method: "GET" }
-    )
+    return fetch(`${API_PRODUCTS}${filter ? `${filter}` : ""}`, {
+      method: "GET",
+    })
       .then((promise) => promise.json())
       .catch((err) => {
         console.error(err);

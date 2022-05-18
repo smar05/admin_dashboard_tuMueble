@@ -10,13 +10,14 @@ import {
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState, useContext, Fragment } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Collapse } from "bootstrap";
 import { UserContext } from "../../context/user.context.js";
 
 export default function Navbar() {
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
+  let [filtroNombre, setFiltroNombre] = useState(null);
 
   // //Referencia al menu desplgable del navbar
   // let navbarDropdown = useRef();
@@ -43,8 +44,6 @@ export default function Navbar() {
   //   itemRef.current.style.display = "none";
   //   return false;
   // }
-
-
 
   const { user, setUser } = useContext(UserContext);
 
@@ -85,28 +84,40 @@ export default function Navbar() {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav" in={toggle}>
             <ul className="navbar-nav ml-auto">
-
               <hr className="bg-body" />
 
-              
-                <form className="form">
-                  <div className="input-group" >
-                    <div className="input-group-prepend">
+              <form className="form">
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <Link
+                      to={{
+                        pathname: "/products-list",
+                        search: filtroNombre ? `?${filtroNombre}` : null,
+                      }}
+                    >
                       <button className="input-group-text rounded-left px-3 form-control">
                         <FontAwesomeIcon icon={faSearch} />
                       </button>
-                    </div>
-                    <input
-                      type="text"
-                      className="form-control rounded-right text-center"
-                      placeholder="Busca un producto..."
-                      aria-label="Username"
-                      aria-describedby="basic-addon1"
-                      
-                    />
+                    </Link>
                   </div>
-                </form>
-              
+                  <input
+                    type="text"
+                    className="form-control rounded-right text-center"
+                    placeholder="Busca un producto..."
+                    aria-label="Username"
+                    aria-describedby="basic-addon1"
+                    onChange={(e) => {
+                      let filtro = null;
+                      if (e.target.value) {
+                        filtro = new URLSearchParams({
+                          productName: e.target.value,
+                        });
+                      }
+                      setFiltroNombre(filtro);
+                    }}
+                  />
+                </div>
+              </form>
 
               <li
                 className="nav-item dropdown"

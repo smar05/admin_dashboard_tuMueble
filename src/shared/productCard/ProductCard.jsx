@@ -35,7 +35,7 @@ function ProductCard(props) {
 
   return (
     <Fragment>
-      <div className="card text-center">
+      <div className="card text-center mb-3 h-90">
         <div
           className="
         card-header
@@ -49,7 +49,7 @@ function ProductCard(props) {
         >
           {product.productName}
           <button
-            className="btn btn-danger rounded"
+            className="btn btn-danger rounded h-50 ml-1"
             onClick={() => {
               eliminarProducto(product.id);
             }}
@@ -59,6 +59,7 @@ function ProductCard(props) {
         </div>
         <img
           className="card-img-top"
+          height={250}
           src={`${
             URL_IMAGES_PRODUCTS +
             (product.images
@@ -69,19 +70,21 @@ function ProductCard(props) {
         ></img>
         <div className="card-body">
           <p>
-            <span className="font-weight-bold">Categoria:</span>{" "}
+            <span className="font-weight-bold">Categoria:</span> <br />
             {product.category.category}
           </p>
           <p>
-            <span className="font-weight-bold">Cant. Inventario:</span>{" "}
+            <span className="font-weight-bold">Cant. Inventario:</span> <br />
             {product.unitsBuyes}
           </p>
           <p>
             <span className="font-weight-bold">Precio Final:</span> $
+            <br />
             {product.priceFinal}
           </p>
           <p>
             <span className="font-weight-bold">Activo: </span>
+            <br />
 
             {product.isActive ? (
               <Fragment>

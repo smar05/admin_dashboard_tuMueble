@@ -1,11 +1,13 @@
 import { Fragment, useContext, useState } from "react";
 import { UserContext } from "../../context/user.context.js";
-import { URL_BACK } from "../../common/ConstData.js";
-import alert from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { UserServices } from "../../services/users.services.js";
 
 function UserDetail() {
   let navigate = useNavigate();
+  
+  //instance the class user services
+  const userServices=new UserServices();
 
   //Context State User Global
   const { user } = useContext(UserContext);
@@ -36,48 +38,6 @@ function UserDetail() {
   };
 
   //Create Users
-  const create = (newUser) =>{
-
-    fetch(`${URL_BACK}api/user/create`,{
-       method:"POST",
-       mode:"cors",
-       headers: {
-        "Content-Type": "application/json"
-    },
-       body: JSON.stringify(newUser)
-   })
-   .then(resp => {
-      console.log("Response antes del JSON", resp);
-     return resp.json()
-   })
-   .then(response => {
-    let { errors } = response;
-    console.log("Despues antes del JSON", response);
-
-    if (errors) {
-      let err = errors.map(err => err.msg) || errors;
-      alert.fire({
-        icon: "error",
-        title: "error",
-        text: err,
-      });
-    } else {
-      alert.fire({
-        icon: "success",
-        timer: 1000,
-      });
-      navigate("/login", { replace: true });
-    }
-   })
-   .catch(error => {
-       alert.fire({
-           icon:"error",
-           text:error,
-           color:error
-       })
-   })
-}
-  
 
   return (
     <form
@@ -86,9 +46,11 @@ function UserDetail() {
       method="POST"
       onSubmit={ (e) => {
         e.preventDefault();
-        let a=create(bodyUser);
-        console.log(a);
-
+        let a= userServices.create(bodyUser);
+        console.log("Me llego esto del servicio de crear usuario", a);
+        if (a) {
+          navigate("/login", { replace: true });          
+        } 
       }}
     >
       <span className="h4 text-black-50 mb-3 text-center">

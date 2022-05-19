@@ -1,32 +1,45 @@
-import alert from "sweetalert2";
 const { URL_BACK } = require("../common/ConstData.js");
 
-const user = {};
+export class UserServices {
 
-/**
- * Create User
- * @param {Object} newUser 
- * @returns Reponse results 
- */
-user.create =(newUser) =>{
-
-     const result =fetch(`${URL_BACK}api/user/create`,{
-        method:"POST",
-        headers: {
+    /**
+     * Create User
+     * @param {Object} newUser 
+     * @returns Reponse results 
+     */
+    create =(newUser) =>{
+    
+        return fetch(`${URL_BACK}api/user/create`,{
+            method:"POST",
+            mode:"cors",
+            headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(newUser)
-    })
-    .then(resp => resp.json())
-    .catch(error => {
-        alert.fire({
-            icon:"error",
-            text:error,
-            color:error
+            body: JSON.stringify(newUser)
         })
-    })
+        .then(resp => {
+            return resp.json()
+        });      
 
-    return result;
+    }
+
+    /**
+     * get info the user from server
+     * @param {String} token JSON WEB TOKEN
+     * @param {String} role Role the user: admin || user
+     * @returns JSON from server
+     */
+    getUser=(token, role)=>{
+        return fetch(`${URL_BACK}api/${role}/detail`,{
+            method:"get",
+            mode:"cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Auth": token
+            }
+        })
+        .then(resp => {
+            return resp.json()
+        }); 
+    }
 }
-
-module.exports=user;

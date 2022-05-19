@@ -43,7 +43,7 @@ function ProductsList() {
 
   return (
     <Fragment>
-      <div className="row">
+      <div className="row justify-content-center">
         {products && products.length > 0
           ? products.map((product, index) => {
               return (

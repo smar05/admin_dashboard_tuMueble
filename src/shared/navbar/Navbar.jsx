@@ -10,11 +10,14 @@ import {
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState, useContext, Fragment } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Collapse } from "bootstrap";
 import { UserContext } from "../../context/user.context.js";
 
 export default function Navbar() {
+
+  const navigate = useNavigate();
+  
   //Referencia al menu desplegable de productos
   let productsDropdown = useRef();
   let [filtroNombre, setFiltroNombre] = useState(null);
@@ -58,7 +61,7 @@ export default function Navbar() {
 
   return (
     <header>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-2 shadow">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-2 shadow mb-0">
         <div className="container-fluid">
           <NavLink
             activeClassName="active"
@@ -215,7 +218,11 @@ export default function Navbar() {
 
                   <button
                     className="btn btn-danger rounded py-1 px-3"
-                    onClick={() => setUser(null)}
+                    onClick={() => {
+                        setUser(null);
+                        navigate("/", {replace:true});
+                      }
+                    } 
                   >
                     <FontAwesomeIcon icon={faRightFromBracket} size="xl" />
                   </button>

@@ -61,7 +61,7 @@ function Login() {
             icon: "success",
             timer: 1000,
           });
-          localStorage.setItem("auth", response.auth);
+          localStorage.setItem("Auth", response.auth);
           handleContextUser(response);
           navigate("/", { replace: true });
         }
